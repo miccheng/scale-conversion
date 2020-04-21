@@ -1,7 +1,6 @@
 const input = document.getElementById("input");
 const output = document.getElementById("output");
 let multiplier = 0;
-// console.log("input", input);
 
 // func to split the recipe by line break and join again to an array
 // regex to turn each item into an object
@@ -31,47 +30,30 @@ form.addEventListener("submit", convert);
 
 function convert(event) {
   event.preventDefault();
-  let conversionMetrics = "cups|cup|tablespoon|tablespoons|gram|grams";
-  let original = input.value;
 
+  let original = input.value;
   let originalArray = original.split("\n");
   let parsedItemArray = [];
 
-  //   regex to make each item into an object
+  //   regex to make each item into an object using group
   for (let i = 0; i < originalArray.length; i++) {
     let regex = /(?<qty>\d+) (?<scale>[tablespoon|gram|cup|tsp]+)(\sof\s|\s)(?<ingredient>[\s\S]+)/;
     parsedItemArray.push(originalArray[i].match(regex).groups);
   }
 
   for (let i = 0; i < parsedItemArray.length; i++) {
-    //   get multipler for conversion formula
+    //   get multipler of ingredient for conversion formula
     for (let ing = 0; ing < Object.keys(ingredientsCupsToGrams).length; ing++) {
-      //   console.log(parsedItemArray[i].ingredient);
-      //   console.log(ingredientsCupsToGrams[ing]);
-      // console.log(parsedItemArray[i].ingredient in ingredientsCupsToGrams);
-      //   if (
-      //     parsedItemArray[i].ingredient ===
-      //     Object.keys(ingredientsCupsToGrams)[ing]
-      //   ) {
       let keys = Object.keys(ingredientsCupsToGrams);
       let values = Object.values(ingredientsCupsToGrams);
-      // console.log(values);
-      // console.log("keys", keys[ing]);
-      // console.log("ingred", parsedItemArray[i].ingredient);
       if (parsedItemArray[i].ingredient === keys[ing]) {
         multiplier = values[ing];
-        console.log(parsedItemArray[i].ingredient, multiplier);
-      } else {
-        multipler = 0;
       }
     }
 
-    // cups to grams
-    // if (
-    //   (parsedItemArray[i].scale === "cups") &
-    //   (parsedItemArray[i].ingredient in ingredientsCupsToGrams)
-    // )
+    // check that ingredient is in our ingredient whitelist
     if (parsedItemArray[i].ingredient in ingredientsCupsToGrams) {
+      // conversion formula
       if (parsedItemArray[i].scale === "cups") {
         let newConversion = Math.round(parsedItemArray[i].qty * multiplier);
         originalArray[i] = originalArray[i].concat(` (${newConversion} grams)`);
