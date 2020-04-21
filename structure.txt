@@ -1,0 +1,35 @@
+recipe = "2 tablespoon of sugar
+3 cups of flour
+1 large egg"
+
+
+recipe.split("\n")
+
+
+[
+    "2 tablespoon of sugar",
+    "3 cups of flour",
+    "1 large egg"
+]
+
+regex
+
+(qty) (scale) of (ingredient)
+
+(tablespoon|gram|cup)
+regex = /(?<qty>\d+) (?<scale>[tablespoon|gram|cup|tsp]+)(\sof\s|\s)(?<ingredient>[\s\S]+)/
+matches.groups
+[...groups, original: ""]
+
+[
+    {qty: 2, scale: "tablespoon", ingredient: "sugar", original: "2 tablespoon of sugar},
+    {qty: 3, scale: "cups", ingredient: "flour", original: "3 cups of flour"},
+    {original: "1 large egg"}
+]
+
+whitelist of ingredients
+scale -convert to singular version. ex: tsp instead of tsps
+
+2 tablespoon of sugar (X GRAMS)
+3 cups of flour (x grams)
+1 large egg
