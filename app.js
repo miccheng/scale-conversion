@@ -1,9 +1,8 @@
 const input = document.getElementById("input");
 const output = document.getElementById("output");
 let multiplier = 0;
-// var numQty = require("numeric-quantity");
 
-console.log(numQty("1 1/4") === 1.25);
+console.log(numericQuantity("1"));
 // func to split the recipe by line break and join again to an array
 // regex to turn each item into an object
 // convert using formula
@@ -18,13 +17,14 @@ const ingredientsCupsToGrams = {
   cakeFlour: ["cake flour", 114],
   salt: ["salt", 292],
   brownSugar: ["brown sugar", 195],
+  granulatedSugar: ["granulated sugar", 200],
   whiteSugar: ["white sugar", 200],
   powderedSugar: ["powdered sugar", 120],
   honey: ["honey", 336],
   molasses: ["molasses", 336],
   syrup: ["syrup", 336],
   buttermilk: ["buttermilk", 245],
-  milk: ["milks", 245],
+  milk: ["milk", 245],
   oats: ["oats", 102],
   bakingSoda: ["baking soda", 220],
   bakingPowder: ["baking powder", 220],
@@ -44,41 +44,38 @@ function convert(event) {
   event.preventDefault();
 
   let original = input.value;
-  let originalArray = original.split("\n");
+  let originalArray = original.split("\n").filter(function (el) {
+    return el != "";
+  });
   let parsedItemArray = [];
 
+  console.log("originalArray", originalArray);
   //   regex to make each item into an object using group
   for (let i = 0; i < originalArray.length; i++) {
     // let regex = /(?<qty>\d+) (?<scale>[tablespoon|gram|cup|tsp]+)(\sof\s|\s)(?<ingredient>[\s\S]+)/;
     let regex = /(?<qty>[^s]+) (?<scale>[tablespoon|gram|cup|tsp]+)(\sof\s|\s)(?<ingredient>[\s\S]+)/;
     parsedItemArray.push(originalArray[i].match(regex).groups);
+    console.log("parsed", parsedItemArray);
   }
 
-  // let regex = /(?<qty>[^s]+) (?<scale>[tablespoon|gram|cup|tsp]+)(\sof\s|\s)(?<ingredient>[\s\S]+)/;
   console.log(parsedItemArray);
   for (let i = 0; i < parsedItemArray.length; i++) {
     //   get multipler of ingredient for conversion formula
     for (let ing = 0; ing < Object.keys(ingredientsCupsToGrams).length; ing++) {
-      // let keys = Object.keys(ingredientsCupsToGrams);
       let values = Object.values(ingredientsCupsToGrams);
       if (parsedItemArray[i].ingredient.includes(values[ing][0])) {
-        // console.log(
-        //   parsedItemArray[i].ingredient,
-        //   values[ing][0],
-        //   values[ing][1]
-        // );
         multiplier = values[ing][1];
       }
     }
 
-    // check that ingredient is in our ingredient whitelist
-    // if (parsedItemArray[i].ingredient in ingredientsCupsToGrams) {
+    // conversion formula
     if (multiplier) {
-      // conversion formula
       // cups to grams
       for (let j = 0; j < cup.length; j++) {
         if (parsedItemArray[i].scale == cup[j]) {
-          let newConversion = Math.round(parsedItemArray[i].qty * multiplier);
+          let newConversion = Math.round(
+            numericQuantity(parsedItemArray[i].qty) * multiplier
+          );
           originalArray[i] = originalArray[i].concat(
             ` (${newConversion} grams)`
           );
@@ -92,7 +89,6 @@ function convert(event) {
           let newConversion = Math.round(
             (parsedItemArray[i].qty * multiplier) / 16
           );
-          // console.log(parsedItemArray[i].scale);
           originalArray[i] = originalArray[i].concat(
             ` (${newConversion} grams)`
           );
@@ -115,27 +111,31 @@ function convert(event) {
         }
       }
 
-      // grams to cups
-      // & parsedItemArray[i].qty < 50
-      // for (let j = 0; j < gram.length; j++) {
-      //   if (parsedItemArray[i].scale === gram[j]) {
-      //     let newConversion = (parsedItemArray[i].qty / multiplier).toFixed(2);
-      //     originalArray[i] = originalArray[i].concat(
-      //       ` (${newConversion} cups)`
-      //     );
-      //     multiplier = 0;
-      //   }
-      // }
-
-      // grams to cups
-      // & parsedItemArray[i].qty < 50
+      // grams to CUPS
       for (let j = 0; j < gram.length; j++) {
         if (parsedItemArray[i].scale === gram[j]) {
-          let newConversion = (parsedItemArray[i].qty / multiplier).toFixed(2);
-          originalArray[i] = originalArray[i].concat(
-            ` (${newConversion} cups)`
-          );
-          multiplier = 0;
+          // grams to TBS
+          if (parsedItemArray[i].qty < 40) {
+            let newConversion = (
+              (parsedItemArray[i].qty / multiplier) *
+              16
+            ).toFixed(2);
+            originalArray[i] = originalArray[i].concat(
+              ` (${newConversion} tablespoons)`
+            );
+            multiplier = 0;
+            // grams to CUPS
+          } else {
+            if (parsedItemArray[i].scale === gram[j]) {
+              let newConversion = (parsedItemArray[i].qty / multiplier).toFixed(
+                2
+              );
+              originalArray[i] = originalArray[i].concat(
+                ` (${newConversion} cups)`
+              );
+              multiplier = 0;
+            }
+          }
         }
       }
     }

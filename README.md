@@ -8,6 +8,20 @@
 
 > Metric conversions for baking
 
+## Install
+
+```
+git clone https://github.com/sophi-li/scale-conversion.git
+```
+
+```
+npm init -y
+```
+
+```
+npm i numeric-quantity
+```
+
 ## Author
 
 👤 Sophia
