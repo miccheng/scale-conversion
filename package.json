@@ -1,0 +1,23 @@
+{
+  "name": "scale-conversion",
+  "version": "1.0.0",
+  "description": "<h1 align=\"center\">Metric conversions for baking</h1> <p>   <img alt=\"Version\" src=\"https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000\" />   <a href=\"https://twitter.com/sophia_wyl\">     <img alt=\"Twitter: sophia_wyl\" src=\"https://img.shields.io/twitter/follow/sophia_wyl.svg?style=social\" target=\"_blank\" />   </a> </p>",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sophi-li/scale-conversion.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sophi-li/scale-conversion/issues"
+  },
+  "homepage": "https://github.com/sophi-li/scale-conversion#readme",
+  "dependencies": {
+    "numeric-quantity": "^0.5.1"
+  }
+}

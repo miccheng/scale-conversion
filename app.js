@@ -1,7 +1,7 @@
 const input = document.getElementById("input");
 const output = document.getElementById("output");
 let multiplier = 0;
-var numQty = require("numeric-quantity");
+// var numQty = require("numeric-quantity");
 
 console.log(numQty("1 1/4") === 1.25);
 // func to split the recipe by line break and join again to an array
