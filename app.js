@@ -11,9 +11,11 @@ console.log(numericQuantity("1"));
 const ingredientsCupsToGrams = {
   water: ["water", 236],
   butter: ["butter", 226],
+  unsaltedButter: ["unsalted butter", 226],
+  saltedButter: ["salted butter", 226],
   margarine: ["margarine", 230],
-  // flour: ["flour", 120],
-  APflour: ["flour", 120],
+  flour: ["flour", 120],
+  APflour: ["all purpose flour", 120],
   cakeFlour: ["cake flour", 114],
   salt: ["salt", 292],
   brownSugar: ["brown sugar", 195],
@@ -53,7 +55,7 @@ function convert(event) {
   //   regex to make each item into an object using group
   for (let i = 0; i < originalArray.length; i++) {
     // let regex = /(?<qty>\d+) (?<scale>[tablespoon|gram|cup|tsp]+)(\sof\s|\s)(?<ingredient>[\s\S]+)/;
-    let regex = /(?<qty>[^s]+) (?<scale>[tablespoon|gram|cup|tsp]+)(\sof\s|\s)(?<ingredient>[\s\S]+)/;
+    let regex = /(?<qty>[^s]+) (?<scale>[tablespoon|gram|cup|tsp\S]+)(\sof\s|\s)(?<ingredient>[\s\S]+)/;
     parsedItemArray.push(originalArray[i].match(regex).groups);
     console.log("parsed", parsedItemArray);
   }
@@ -63,6 +65,7 @@ function convert(event) {
     //   get multipler of ingredient for conversion formula
     for (let ing = 0; ing < Object.keys(ingredientsCupsToGrams).length; ing++) {
       let values = Object.values(ingredientsCupsToGrams);
+      // if (parsedItemArray[i].ingredient.includes(values[ing][0])) {
       if (parsedItemArray[i].ingredient.includes(values[ing][0])) {
         multiplier = values[ing][1];
       }
@@ -87,7 +90,7 @@ function convert(event) {
       for (let j = 0; j < tablespoon.length; j++) {
         if (parsedItemArray[i].scale === tablespoon[j]) {
           let newConversion = Math.round(
-            (parsedItemArray[i].qty * multiplier) / 16
+            (numericQuantity(parsedItemArray[i].qty) * multiplier) / 16
           );
           originalArray[i] = originalArray[i].concat(
             ` (${newConversion} grams)`
@@ -100,7 +103,7 @@ function convert(event) {
       for (let j = 0; j < teaspoon.length; j++) {
         if (parsedItemArray[i].scale == teaspoon[j]) {
           let newConversion = (
-            Math.round(parsedItemArray[i].qty * multiplier) /
+            Math.round(numericQuantity(parsedItemArray[i].qty) * multiplier) /
             16 /
             3
           ).toFixed(2);
