@@ -17,9 +17,11 @@ const ingredientsCupsToGrams = {
   flour: ["flour", 120],
   APflour: ["all purpose flour", 120],
   cakeFlour: ["cake flour", 114],
+  cocoaPowder: ["cocoa powder", 100],
   salt: ["salt", 292],
   brownSugar: ["brown sugar", 195],
   granulatedSugar: ["granulated sugar", 200],
+  granulatedWhiteSugar: ["granulated white sugar", 200],
   whiteSugar: ["white sugar", 200],
   powderedSugar: ["powdered sugar", 120],
   honey: ["honey", 336],
@@ -31,6 +33,7 @@ const ingredientsCupsToGrams = {
   bakingSoda: ["baking soda", 220],
   bakingPowder: ["baking powder", 220],
   oil: ["oil", 218],
+  vegetableOil: ["vegetable oil", 218],
   vanillaExtract: ["vanilla extract", 208],
   activeDryYeast: ["active dry yeast", 224],
 };
@@ -54,8 +57,17 @@ function convert(event) {
   console.log("originalArray", originalArray);
   //   regex to make each item into an object using group
   for (let i = 0; i < originalArray.length; i++) {
+    // Attempt 1
     // let regex = /(?<qty>\d+) (?<scale>[tablespoon|gram|cup|tsp]+)(\sof\s|\s)(?<ingredient>[\s\S]+)/;
-    let regex = /(?<qty>[^s]+) (?<scale>[tablespoon|gram|cup|tsp\S]+)(\sof\s|\s)(?<ingredient>[\s\S]+)/;
+
+    // Attempt 2
+    // Incorrectly parses the scale for ingredients with two words. ex: 1/2 cup of vegetable oil
+    let regex = /(?<qty>[^s]+) (?<scale>[\S|tablespoon|gram|cup|tsp|tbs]+)(\sof\s|\s)(?<ingredient>[\s\S]+)/;
+
+    // Attempt 3
+    // Doesn't capture the 1 in 1 1/2 cups butter milk
+    // let regex = /(?<qty>[^s*|^\s]*) (?<scale>[\w|tablespoon|gram|cup|tsp|tbs]+)(\sof\s|\s)(?<ingredient>[\s\S]+)/;
+
     parsedItemArray.push(originalArray[i].match(regex).groups);
     console.log("parsed", parsedItemArray);
   }
