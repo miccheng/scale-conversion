@@ -8,6 +8,30 @@ console.log(numericQuantity("1"));
 // convert using formula
 // display output
 
+const parseLine = (text) => {
+  const scaleWordsRegex = /(tablespoon|teaspoon|gram|cup|tsp|tbs|medium)[\w]*\s/i
+  const result = {
+    qty: null,
+    scale: null,
+    ingredient: null,
+    original: text
+  }
+
+  const containsScaleWord = text.match(scaleWordsRegex)
+  // console.log(containsScaleWord)
+  if (containsScaleWord) {
+    result.scale = containsScaleWord[1] // Captures the exact scale word
+    const scaleWordPos = containsScaleWord.index
+    result.qty = text.slice(0, scaleWordPos).trim()
+    result.ingredient = text.slice(scaleWordPos + containsScaleWord[0].length)
+
+    const operatorWords = /(of)/i
+    result.ingredient = result.ingredient.replace(operatorWords, '').trim()
+  }
+
+  return result
+}
+
 const ingredientsCupsToGrams = {
   water: ["water", 236],
   butter: ["butter", 226],
@@ -62,13 +86,13 @@ function convert(event) {
 
     // Attempt 2
     // Incorrectly parses the scale for ingredients with two words. ex: 1/2 cup of vegetable oil
-    let regex = /(?<qty>[^s]+) (?<scale>[\S|tablespoon|gram|cup|tsp|tbs]+)(\sof\s|\s)(?<ingredient>[\s\S]+)/;
+    // let regex = /(?<qty>[^s]+) (?<scale>[\S|tablespoon|gram|cup|tsp|tbs]+)(\sof\s|\s)(?<ingredient>[\s\S]+)/;
 
     // Attempt 3
     // Doesn't capture the 1 in 1 1/2 cups butter milk
     // let regex = /(?<qty>[^s*|^\s]*) (?<scale>[\w|tablespoon|gram|cup|tsp|tbs]+)(\sof\s|\s)(?<ingredient>[\s\S]+)/;
 
-    parsedItemArray.push(originalArray[i].match(regex).groups);
+    parsedItemArray.push(parseLine(originalArray[i]));
     console.log("parsed", parsedItemArray);
   }
 
